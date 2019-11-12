@@ -41,6 +41,39 @@ static time_t utc_time(int week, long tow) {
   return t;
 } 
 
+
+
+void message(supl_assist_t *ctx){
+  printf("MESSAGE:\n");
+  for (int i = 0; i < ctx->cnt_alm; i++) {
+    struct supl_almanac_s *a = &ctx->alm[i];
+    struct supl_ephemeris_s *e = &ctx->eph[i];
+    char buff[100];
+    //printf("%d %d\n", a->toa,e->i_dot);
+    //printf("%d\n", e->i_dot);
+    //printf("%d\n", e->i_dot * pow(2.0, -43));
+    //printf("%g\n", e->i_dot * pow(2.0, -43));
+    sprintf(buff, "%d %d %x%x %x%04x %x/%d %x %x %x %x %x/%x",
+                        a->prn,                     //SV      ok
+                        1024 + ctx->time.gps_week,  //WEEK    ok
+                        64 + a->prn, a->e,          //DO      ok
+                        a->toa,e->i_dot,            //D1      ------
+                        a->OMEGA_dot,a->OMEGA_dot,  //D2      +-
+                        a->A_sqrt,                  //D3      ok
+                        a->OMEGA_0,                 //D4      ok
+                        a->w,                       //D5      ok
+                        a->M0,                      //D6      ok
+                        a->AF0, a->AF1);            //D7      +-
+    printf("%s\n", buff);
+  }
+}
+
+
+
+
+
+
+
 static int supl_consume_1(supl_assist_t *ctx) {
   if (ctx->set & SUPL_RRLP_ASSIST_REFLOC) {
     fprintf(stdout, "Reference Location:\n");
@@ -154,10 +187,177 @@ static int supl_consume_1(supl_assist_t *ctx) {
 	      a->AF0 * pow(2.0, -20),
 	      a->AF1 * pow(2.0, -38));
     }
+    message(ctx);
   }
 
   return 1;
 }
+
+
+
+static int supl_consume_log(supl_assist_t *ctx) {
+  FILE * logFile;
+  time_t t = time(NULL);
+  struct tm* aTm = localtime(&t);
+  char timeBuff[40];
+  sprintf(timeBuff,"logs/log_%02d-%02d__%02d_%02d_%02d.txt", aTm->tm_mon+1, aTm->tm_mday, aTm->tm_hour, aTm->tm_min, aTm->tm_sec);
+  printf("%s\n", timeBuff);
+  
+  if((logFile=fopen(timeBuff,"w")) == NULL) {
+      printf("Cannot open directory file.");
+      exit(1);
+  }
+
+  if (ctx->set & SUPL_RRLP_ASSIST_REFLOC) {
+    fprintf(logFile, "Reference Location:\n");
+    fprintf(logFile, "  Lat: %f\n", ctx->pos.lat);
+    fprintf(logFile, "  Lon: %f\n", ctx->pos.lon);
+    fprintf(logFile, "  Uncertainty: %d (%.1f m)\n", 
+      ctx->pos.uncertainty, 10.0*(pow(1.1, ctx->pos.uncertainty)-1));
+  }
+
+  if (ctx->set & SUPL_RRLP_ASSIST_REFTIME) {
+    time_t t;
+
+    t = utc_time(ctx->time.gps_week, ctx->time.gps_tow);
+
+    fprintf(logFile, "Reference Time:\n");
+    fprintf(logFile, "  GPS Week: %ld\n", ctx->time.gps_week);
+    fprintf(logFile, "  GPS TOW:  %ld %lf\n", ctx->time.gps_tow, ctx->time.gps_tow*0.08);
+    fprintf(logFile, "  ~ UTC:    %s", ctime(&t));
+  }
+
+  if (ctx->set & SUPL_RRLP_ASSIST_IONO) {
+    fprintf(logFile, "Ionospheric Model:\n");
+    fprintf(logFile, "  # a0 a1 a2 b0 b1 b2 b3\n");
+    fprintf(logFile, "  %g, %g, %g",
+      ctx->iono.a0 * pow(2.0, -30), 
+      ctx->iono.a1 * pow(2.0, -27),
+      ctx->iono.a2 * pow(2.0, -24));
+    fprintf(logFile, " %g, %g, %g, %g\n",
+      ctx->iono.b0 * pow(2.0, 11), 
+      ctx->iono.b1 * pow(2.0, 14),
+      ctx->iono.b2 * pow(2.0, 16), 
+      ctx->iono.b3 * pow(2.0, 16));
+  }
+
+  if (ctx->set & SUPL_RRLP_ASSIST_UTC) {
+    fprintf(logFile, "UTC Model:\n");
+    fprintf(logFile, "  # a0, a1 delta_tls tot dn\n");
+    fprintf(logFile, "  %g %g %d %d %d %d %d %d\n",
+      ctx->utc.a0 * pow(2.0, -30),
+      ctx->utc.a1 * pow(2.0, -50),
+      ctx->utc.delta_tls,
+      ctx->utc.tot, ctx->utc.wnt, ctx->utc.wnlsf,
+      ctx->utc.dn, ctx->utc.delta_tlsf);
+  }
+
+  if (ctx->cnt_eph) {
+    int i;
+
+    fprintf(logFile, "Ephemeris:");
+    fprintf(logFile, " %d satellites\n", ctx->cnt_eph);
+    fprintf(logFile, "  # prn delta_n M0 A_sqrt OMEGA_0 i0 w OMEGA_dot i_dot Cuc Cus Crc Crs Cic Cis");
+    fprintf(logFile, " toe IODC toc AF0 AF1 AF2 bits ura health tgd OADA\n");
+
+    for (i = 0; i < ctx->cnt_eph; i++) {
+      struct supl_ephemeris_s *e = &ctx->eph[i];
+
+      fprintf(logFile, "  %d %g %g %g %g %g %g %g %g",
+        e->prn, 
+        e->delta_n * pow(2.0, -43), 
+        e->M0 * pow(2.0, -31), 
+        e->A_sqrt * pow(2.0, -19), 
+        e->OMEGA_0 * pow(2.0, -31), 
+        e->i0 * pow(2.0, -31), 
+        e->w * pow(2.0, -31), 
+        e->OMEGA_dot * pow(2.0, -43), 
+        e->i_dot * pow(2.0, -43));
+      fprintf(logFile, " %g %g %g %g %g %g",
+        e->Cuc * pow(2.0, -29), 
+        e->Cus * pow(2.0, -29), 
+        e->Crc * pow(2.0, -5), 
+        e->Crs * pow(2.0, -5), 
+        e->Cic * pow(2.0, -29), 
+        e->Cis * pow(2.0, -29));
+      fprintf(logFile, " %g %u %g %g %g %g",
+        e->toe * pow(2.0, 4), 
+        e->IODC, 
+        e->toc * pow(2.0, 4), 
+        e->AF0 * pow(2.0, -31), 
+        e->AF1 * pow(2.0, -43), 
+        e->AF2 * pow(2.0, -55));
+      fprintf(logFile, " %d %d %d %d %d\n",
+        e->bits,
+        e->ura,
+        e->health,
+        e->tgd,
+        e->AODA * 900);
+    }
+  }
+
+  if (ctx->cnt_alm) {
+    int i;
+
+    fprintf(logFile, "Almanac:");
+    fprintf(logFile, " %d satellites\n", ctx->cnt_alm);
+    fprintf(logFile, "  # prn e toa Ksii OMEGA_dot A_sqrt OMEGA_0 w M0 AF0 AF1\n");
+
+    for (i = 0; i < ctx->cnt_alm; i++) {
+      struct supl_almanac_s *a = &ctx->alm[i];
+
+      fprintf(logFile, "  %d %g %g %g %g ",
+        a->prn, 
+        a->e * pow(2.0, -21), 
+        a->toa * pow(2.0, 12),
+        a->Ksii * pow(2.0, -19),
+        a->OMEGA_dot * pow(2.0, -38));
+      fprintf(logFile, "%g %g %g %g %g %g\n",
+        a->A_sqrt * pow(2.0, -11), 
+        a->OMEGA_0 * pow(2.0, -23),
+        a->w * pow(2.0, -23),
+        a->M0 * pow(2.0, -23),
+        a->AF0 * pow(2.0, -20),
+        a->AF1 * pow(2.0, -38));
+    }
+    message(ctx);
+  }
+  printf("MyFile - ok\n");
+  fclose(logFile);
+
+  return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 static int supl_consume_2(supl_assist_t *ctx) {
   if (ctx->set & SUPL_RRLP_ASSIST_REFTIME) {
@@ -192,13 +392,13 @@ static int supl_consume_2(supl_assist_t *ctx) {
     for (i = 0; i < ctx->cnt_eph; i++) {
       struct supl_ephemeris_s *e = &ctx->eph[i];
 
-      fprintf(stdout, "e %d %d %d %d %d %d %d %d %d %d",
+      fprintf(stdout, "e\nn:%d\ndelta_n:%d\nM0:%d\nA_sqrt:%d\nOMGA_0:%d\ni0:%d\nW:%d\nOMEGA_dot:%d\ni_dot:%d\ne:%d\n",
 	      e->prn, e->delta_n, e->M0, e->A_sqrt, e->OMEGA_0, e->i0, e->w, e->OMEGA_dot, e->i_dot, e->e);
-      fprintf(stdout, " %d %d %d %d %d %d",
+      fprintf(stdout, "---\nCuc:%X\nCus:%X\nCrc:%X\nCrs:%X\nCic:%X\nCis:%X\n",
 	      e->Cuc, e->Cus, e->Crc, e->Crs, e->Cic, e->Cis);
-      fprintf(stdout, " %d %d %d %d %d %d",
+      fprintf(stdout, "---\ntoe:%d\nIODS:%d\ntoc:%X\nAF0:%X\nAF1:%X\nAF2:%X\n",
 	      e->toe, e->IODC, e->toc, e->AF0, e->AF1, e->AF2);
-      fprintf(stdout, " %d %d %d %d %d\n",
+      fprintf(stdout, "---\nbits:%d\nura:%d\nhealth:%d\ntgd:%d\nAODA:%d\n\n\n",
 	      e->bits, e->ura, e->health, e->tgd, e->AODA);
     }
   }
@@ -446,7 +646,8 @@ int main(int argc, char *argv[]) {
     supl_consume_2(&assist);
     break;
   case FORMAT_HUMAN:
-    supl_consume_1(&assist);
+    //supl_consume_1(&assist);
+    supl_consume_log(&assist);
     break;
   }
 
