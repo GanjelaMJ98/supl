@@ -1,0 +1,372 @@
+Send 27 bytes
+<ULP-PDU>
+    <length>27</length>
+    <version>
+        <maj>1</maj>
+        <min>0</min>
+        <servind>0</servind>
+    </version>
+    <sessionID>
+        <setSessionID>
+            <sessionId>1</sessionId>
+            <setId>
+                <imsi>FF FF 91 94 48 45 83 98</imsi>
+            </setId>
+        </setSessionID>
+    </sessionID>
+    <message>
+        <msSUPLSTART>
+            <sETCapabilities>
+                <posTechnology>
+                    <agpsSETassisted><false/></agpsSETassisted>
+                    <agpsSETBased><true/></agpsSETBased>
+                    <autonomousGPS><false/></autonomousGPS>
+                    <aFLT><false/></aFLT>
+                    <eCID><false/></eCID>
+                    <eOTD><false/></eOTD>
+                    <oTDOA><false/></oTDOA>
+                </posTechnology>
+                <prefMethod><agpsSETBasedPreferred/></prefMethod>
+                <posProtocol>
+                    <tia801><false/></tia801>
+                    <rrlp><true/></rrlp>
+                    <rrc><false/></rrc>
+                </posProtocol>
+            </sETCapabilities>
+            <locationId>
+                <cellInfo>
+                    <gsmCell>
+                        <refMCC>250</refMCC>
+                        <refMNC>20</refMNC>
+                        <refLAC>27822</refLAC>
+                        <refCI>235</refCI>
+                    </gsmCell>
+                </cellInfo>
+                <status><current/></status>
+            </locationId>
+        </msSUPLSTART>
+    </message>
+</ULP-PDU>
+Recv 34 bytes
+<ULP-PDU>
+    <length>34</length>
+    <version>
+        <maj>1</maj>
+        <min>0</min>
+        <servind>0</servind>
+    </version>
+    <sessionID>
+        <setSessionID>
+            <sessionId>1</sessionId>
+            <setId>
+                <imsi>FF FF 91 94 48 45 83 98</imsi>
+            </setId>
+        </setSessionID>
+        <slpSessionID>
+            <sessionID>4C E2 08 FC</sessionID>
+            <slpId>
+                <fQDN>supl.google.com</fQDN>
+            </slpId>
+        </slpSessionID>
+    </sessionID>
+    <message>
+        <msSUPLRESPONSE>
+            <posMethod><agpsSETbased/></posMethod>
+        </msSUPLRESPONSE>
+    </message>
+</ULP-PDU>
+Send 45 bytes
+<ULP-PDU>
+    <length>45</length>
+    <version>
+        <maj>1</maj>
+        <min>0</min>
+        <servind>0</servind>
+    </version>
+    <sessionID>
+        <setSessionID>
+            <sessionId>1</sessionId>
+            <setId>
+                <imsi>FF FF 91 94 48 45 83 98</imsi>
+            </setId>
+        </setSessionID>
+        <slpSessionID>
+            <sessionID>4C E2 08 FC</sessionID>
+            <slpId>
+                <fQDN>supl.google.com</fQDN>
+            </slpId>
+        </slpSessionID>
+    </sessionID>
+    <message>
+        <msSUPLPOSINIT>
+            <sETCapabilities>
+                <posTechnology>
+                    <agpsSETassisted><false/></agpsSETassisted>
+                    <agpsSETBased><true/></agpsSETBased>
+                    <autonomousGPS><false/></autonomousGPS>
+                    <aFLT><false/></aFLT>
+                    <eCID><false/></eCID>
+                    <eOTD><false/></eOTD>
+                    <oTDOA><false/></oTDOA>
+                </posTechnology>
+                <prefMethod><agpsSETBasedPreferred/></prefMethod>
+                <posProtocol>
+                    <tia801><false/></tia801>
+                    <rrlp><true/></rrlp>
+                    <rrc><false/></rrc>
+                </posProtocol>
+            </sETCapabilities>
+            <requestedAssistData>
+                <almanacRequested><false/></almanacRequested>
+                <utcModelRequested><true/></utcModelRequested>
+                <ionosphericModelRequested><true/></ionosphericModelRequested>
+                <dgpsCorrectionsRequested><false/></dgpsCorrectionsRequested>
+                <referenceLocationRequested><true/></referenceLocationRequested>
+                <referenceTimeRequested><true/></referenceTimeRequested>
+                <acquisitionAssistanceRequested><true/></acquisitionAssistanceRequested>
+                <realTimeIntegrityRequested><true/></realTimeIntegrityRequested>
+                <navigationModelRequested><true/></navigationModelRequested>
+            </requestedAssistData>
+            <locationId>
+                <cellInfo>
+                    <gsmCell>
+                        <refMCC>250</refMCC>
+                        <refMNC>20</refMNC>
+                        <refLAC>27822</refLAC>
+                        <refCI>235</refCI>
+                    </gsmCell>
+                </cellInfo>
+                <status><current/></status>
+            </locationId>
+        </msSUPLPOSINIT>
+    </message>
+</ULP-PDU>
+Recv 1101 bytes
+<ULP-PDU>
+    <length>1101</length>
+    <version>
+        <maj>1</maj>
+        <min>0</min>
+        <servind>0</servind>
+    </version>
+    <sessionID>
+        <setSessionID>
+            <sessionId>1</sessionId>
+            <setId>
+                <imsi>FF FF 91 94 48 45 83 98</imsi>
+            </setId>
+        </setSessionID>
+        <slpSessionID>
+            <sessionID>4C E2 08 FC</sessionID>
+            <slpId>
+                <fQDN>supl.google.com</fQDN>
+            </slpId>
+        </slpSessionID>
+    </sessionID>
+    <message>
+        <msSUPLPOS>
+            <posPayLoad>
+                <rrlpPayload>
+                    24 1A 70 27 75 14 07 F8 00 80 02 10 00 00 00 00 
+                    00 00 00 00 00 00 04 61 97 D4 03 FC 83 33 EA 8F 
+                    D6 D5 72 D9 FF A3 B2 CF DB 40 95 E8 C3 53 08 D4 
+                    21 A5 CF C6 5F 4F BF BC C6 12 06 B2 BF E4 53 EC 
+                    84 3E CA 63 4F 94 6A A6 3F D6 54 C9 D0 08 40 00 
+                    7C 00 00 00 00 00 00 00 00 00 00 01 68 CB EA 01 
+                    FE F1 4B 09 47 C7 CA EE FD C0 3D 5A A7 CD 10 9E 
+                    7A 87 B9 9D 3A 10 C9 F4 53 2F A7 E0 1D 22 4C CB 
+                    6F DF E6 A9 BF C3 8E A4 28 0E AB 08 7E 9F EB 81 
+                    A3 EE 08 20 00 16 00 00 00 00 00 00 00 00 00 00 
+                    01 0A 65 F3 00 FF 9C F6 B1 BC 14 35 B2 15 01 29 
+                    F2 14 11 68 0A A7 18 C4 4D DD 08 6A A2 E9 97 CB 
+                    F0 02 36 D2 70 18 10 03 74 E8 5B 91 74 88 14 03 
+                    92 69 0F F4 A0 F0 92 08 10 00 5F 00 00 00 00 00 
+                    00 00 00 00 00 00 68 32 FA 80 7F FC 7F 8F 3E 09 
+                    E6 E4 25 0F 64 EA B6 09 00 0B F2 8F 26 26 06 84 
+                    31 23 50 CB E9 F8 04 1B 56 31 B8 87 FF 5A 6B A3 
+                    47 6A 3C 7A 0A 36 08 37 FA 47 A8 82 05 08 00 12 
+                    00 00 00 00 00 00 00 00 00 00 00 45 19 7D 40 3F 
+                    CB 38 0F AC FE 19 57 05 BE E7 F2 9C FE C4 01 8E 
+                    A2 41 32 95 42 1B 2B 84 65 F4 FC 00 54 5E 6F 26 
+                    13 FF DD 3E A8 48 1C 99 4A 78 CF A9 7B FD 65 44 
+                    92 C3 04 00 16 40 00 00 00 00 00 00 00 00 00 00 
+                    1A 0C BE A0 1F EE 1B 2E 03 8C B2 AF B1 B4 75 C5 
+                    F0 8B 5E 06 BF 7D CE 95 E0 A1 0D D8 40 32 FA 7D 
+                    FE 60 31 A2 BA D6 00 D6 9B 9C 8C C2 58 AC 75 04 
+                    05 3D FE 9E 75 FE 91 C2 00 01 C0 00 00 00 00 00 
+                    00 00 00 00 00 11 66 5F 50 0F FE AF C9 15 B8 C9 
+                    57 B2 98 FB 65 EF B9 96 01 31 D0 DB 47 4F D0 86 
+                    56 7B 99 7D 3E FF 92 C1 4B 09 DC FF 8F 4F 10 1D 
+                    2F 3F 54 EC A1 B5 94 FF 4F E4 EB C1 01 00 04 40 
+                    00 00 00 00 00 00 00 00 00 00 08 33 2F A8 07 FA 
+                    A7 55 73 DE F5 EC F3 CF 45 4A B2 DF 0B C0 35 46 
+                    C0 64 9C A8 43 20 44 4C BE 9F 7F FC E0 9F B3 30 
+                    80 2A A6 CF 73 32 99 B2 C4 36 55 42 7F A7 B6 63 
+                    D8 90 80 02 20 00 00 00 00 00 00 00 00 00 00 04 
+                    21 97 D4 03 FB EB 76 27 D0 44 B6 D1 2F E7 33 37 
+                    10 33 40 52 8F AE D1 34 B4 21 A7 58 86 5F 4F C0 
+                    01 DB 39 56 71 C0 09 D3 A1 5F A1 52 23 88 2D AC 
+                    FE BF D2 5F C1 BC 50 40 01 10 00 00 00 00 00 00 
+                    00 00 00 00 01 98 CB E6 02 01 89 13 D3 17 62 3B 
+                    BB AA EE 13 E2 67 6F B0 86 70 E8 89 60 EA 10 DF 
+                    B4 C3 2F 97 E0 0E 5E 55 B1 91 5F C7 E9 48 CA 3F 
+                    E4 C3 B4 0D 0F CD 5F E8 DC 61 5C 2C 20 00 3A 00 
+                    00 00 00 00 00 00 00 00 00 00 CA 65 F5 00 FF BB 
+                    30 53 9C 1E 45 86 FC E2 00 83 0C 16 F0 1E DD CD 
+                    B4 13 C5 08 63 54 A9 97 D3 EF F8 A7 2B 7A 5A F0 
+                    01 14 FE 5D 45 D5 BB F5 A0 27 8B 6F F4 67 30 99 
+                    18 10 00 3D 00 00 00 00 00 00 00 00 00 00 00 68 
+                    32 FA 80 80 14 7B A2 61 F5 6E B6 14 14 D3 6A B1 
+                    F7 34 08 43 DA 56 58 7A 84 35 70 10 CB E9 F8 01 
+                    AE 65 1D A6 67 FF FA 77 09 87 29 67 0B 08 B5 58 
+                    F7 FA BA E6 49 8D 08 00 2F 00 00 00 00 00 00 00 
+                    00 00 00 00 35 99 7D 40 40 09 BC A9 50 F7 89 5E 
+                    CE 39 46 D5 5C F8 F8 0B 00 B2 91 29 2F 42 1C 31 
+                    82 65 F4 FC 01 0F 23 B4 FD 3B FD F5 39 15 FA E4 
+                    BE 51 89 3B 62 3B FD 61 33 33 27 00 80 1A 00 00 
+                    00 00 00 00 00 00 00 00 00 1A 0C BE A0 20 06 17 
+                    0C 0F 7A 43 B9 FB 04 BF 1C 98 7A ED 06 23 E5 14 
+                    91 5B A1 0C BF 04 32 FA 7E 00 9B 74 BF C2 91 FE 
+                    AA 97 3C AF 62 64 9E 88 6D 49 19 FE 98 19 8F 83 
+                    C2 20 0C 20 00 00 00 00 00 00 00 00 00 00 0D 46 
+                    5F 50 0F FB EE 7C 8B 41 64 D7 C6 A8 01 A4 DF 41 
+                    50 02 CB FC 3A C0 FB D0 86 A7 60 19 7D 3F 01 08 
+                    74 42 2D 2C FF D7 4F EB ED 43 5B 5B 2F 44 9C 44 
+                    FF 4A F9 11 2C 6B FB F4 0D 83 DB EC 3B FF FF DC 
+                    00 00 00 11 20 BC 94 4C 3C 94
+                </rrlpPayload>
+            </posPayLoad>
+        </msSUPLPOS>
+    </message>
+</ULP-PDU>
+Send 36 bytes
+<ULP-PDU>
+    <length>36</length>
+    <version>
+        <maj>1</maj>
+        <min>0</min>
+        <servind>0</servind>
+    </version>
+    <sessionID>
+        <setSessionID>
+            <sessionId>1</sessionId>
+            <setId>
+                <imsi>FF FF 91 94 48 45 83 98</imsi>
+            </setId>
+        </setSessionID>
+        <slpSessionID>
+            <sessionID>4C E2 08 FC</sessionID>
+            <slpId>
+                <fQDN>supl.google.com</fQDN>
+            </slpId>
+        </slpSessionID>
+    </sessionID>
+    <message>
+        <msSUPLPOS>
+            <posPayLoad>
+                <rrlpPayload>26</rrlpPayload>
+            </posPayLoad>
+        </msSUPLPOS>
+    </message>
+</ULP-PDU>
+Recv 1145 bytes
+<ULP-PDU>
+    <length>1145</length>
+    <version>
+        <maj>1</maj>
+        <min>0</min>
+        <servind>0</servind>
+    </version>
+    <sessionID>
+        <setSessionID>
+            <sessionId>1</sessionId>
+            <setId>
+                <imsi>FF FF 91 94 48 45 83 98</imsi>
+            </setId>
+        </setSessionID>
+        <slpSessionID>
+            <sessionID>4C E2 08 FC</sessionID>
+            <slpId>
+                <fQDN>supl.google.com</fQDN>
+            </slpId>
+        </slpSessionID>
+    </sessionID>
+    <message>
+        <msSUPLPOS>
+            <posPayLoad>
+                <rrlpPayload>
+                    24 18 41 E8 04 40 0B 00 00 00 00 00 00 00 00 00 
+                    00 00 1A 0C BE A0 20 0F A5 4B 04 70 FF AB 4E 26 
+                    08 1A A3 73 44 06 D7 09 F3 8F AA A1 0C CC 58 32 
+                    FA 7E 01 41 8D F9 AE 9E 00 F2 A0 6C 2F BE 79 34 
+                    EC 4A 4B 09 FE B2 51 DC B4 42 1F 87 E0 00 00 00 
+                    00 00 00 00 00 00 00 0E 86 5F 50 10 02 F1 A1 D6 
+                    BE C3 D8 0B 62 24 6E 99 BE B2 84 00 D3 C3 CB EE 
+                    D0 86 AE 7B 99 7D 3E FF E1 13 7E D1 FA FE 23 4D 
+                    F3 30 FF 27 65 75 BC 22 02 FF 55 57 25 12 41 00 
+                    06 10 00 00 00 00 00 00 00 00 00 00 05 F3 2F A8 
+                    08 02 E6 06 E3 1C 45 EB 23 E5 54 E7 92 DC BE C1 
+                    2E 18 17 24 61 E8 43 51 00 CC BE 9F 7F CA 65 5D 
+                    85 EF 80 06 A8 06 7F 4B 9D 1C BE 31 92 AB 7F A8 
+                    49 71 F9 30 10 00 A8 00 00 00 00 00 00 00 00 00 
+                    00 03 71 97 D4 04 00 0E 29 10 70 79 F7 C7 D7 E2 
+                    28 12 70 69 80 52 AB 63 31 30 F4 21 9D 0B 66 5F 
+                    4F C0 11 D8 B1 2A A3 3F F7 52 FA EF 91 51 04 F2 
+                    91 3F 55 BF D0 D0 43 CC A0 08 00 20 00 00 00 00 
+                    00 00 00 00 00 00 01 A8 CB E6 02 00 D5 D2 32 87 
+                    D9 8B 45 D8 47 D0 30 77 E0 70 C9 03 9C 09 92 1A 
+                    10 CF C8 33 2F 97 DF D9 A2 55 A3 D4 9F EB E9 AF 
+                    B2 30 24 C6 91 C1 C8 52 1F E8 DA A4 55 54 20 00 
+                    5C 00 00 00 00 00 00 00 00 00 00 00 B2 65 F5 00 
+                    FF D2 35 DC D4 1D 8D F2 D0 18 90 CE 3C 19 28 1C 
+                    20 A7 6C 49 C5 08 69 77 21 97 D3 F0 06 D6 6B 0E 
+                    AA B0 0A 14 BA 68 BA F4 49 09 8E 6D E9 6F F4 4B 
+                    31 47 2C 10 00 28 00 00 00 00 00 00 00 00 00 00 
+                    00 54 32 FA 80 80 14 6B 8D 69 EB E2 D4 5B BB 4D 
+                    1E E5 ED 1C 1B 1E 3F 0E 48 FE 84 37 3D F8 CB E9 
+                    F8 00 3E 05 9A EE F7 FA BA 66 F8 81 A9 8F 72 57 
+                    D6 5A 87 FA 92 36 49 57 08 80 18 80 00 00 00 00 
+                    00 00 00 00 00 00 43 19 7D 40 3F FE 3F AF FD 1C 
+                    15 65 4D B5 69 00 B1 18 34 09 40 4C CF 30 B9 42 
+                    1A E7 38 65 F4 FB FD B0 4C DA AA 53 FE 35 31 C2 
+                    56 3C 8E 04 CA 68 5F 9B FD 3E C4 27 6C 00 80 09 
+                    80 00 00 00 00 00 00 00 00 00 00 23 0C BE A0 1F 
+                    FF 1F 71 18 85 ED B3 EF 8B A7 8A 02 84 EC 04 62 
+                    32 3B 82 E6 A1 0D 12 04 32 FA 7D FF 64 DA 99 8A 
+                    46 00 FE 9D BE 17 CE B3 A2 90 E5 3E 61 FE 86 92 
+                    21 36 40 40 05 00 00 00 00 00 00 00 00 00 00 00 
+                    12 06 5F 50 10 09 51 59 F1 42 F3 5B DF 3B 0A 8E 
+                    B4 42 9A 81 10 9D F1 C1 5B 50 86 C7 AB 19 7D 3F 
+                    00 3A 6A B7 92 39 00 21 4D 57 2C BB 56 71 09 FC 
+                    22 70 FF 41 A7 12 D3 41 00 05 90 00 00 00 00 00 
+                    00 00 00 00 00 08 43 2F A8 07 F9 77 09 D3 9C 2A 
+                    AB 4D 8A 58 B5 52 9C 93 80 F0 69 08 A3 8C A8 43 
+                    4F FF 8C BE 9F 80 16 61 29 F9 A0 7F C1 A7 DF 43 
+                    3A A0 3F 94 74 E0 9F 7F A9 B1 78 31 B0 80 01 50 
+                    00 00 00 00 00 00 00 00 00 00 03 41 97 D4 03 FF 
+                    9F 18 22 30 4D 76 24 69 0A 1A 50 90 66 01 39 57 
+                    F5 10 6C 54 21 B4 41 E6 5F 4F BF C5 1D 24 AC 82 
+                    40 62 D3 F5 A8 51 D6 A8 A2 9D 22 2F 3F D1 D3 43 
+                    BC E0 08 00 7C 00 00 00 00 00 00 00 00 00 00 01 
+                    AC CB EA 01 FE A2 18 50 56 F9 BA BA F2 F8 54 62 
+                    47 20 20 08 CB 5F 49 07 3A 10 D6 08 63 2F A7 E0 
+                    03 18 FD 5E 96 E0 02 AA 0A D5 40 67 A5 F5 01 70 
+                    5D 1F EA 81 DC DE 74 20 00 58 00 00 00 00 00 00 
+                    00 00 00 00 01 10 65 F5 00 FF 6C EA 79 24 6D 7D 
+                    97 45 97 66 C6 E4 60 E8 11 12 EA 74 A3 8D 08 6F 
+                    34 29 97 D3 EF FA 01 AE 82 C4 50 06 74 C9 D3 C3 
+                    D2 D4 A1 2F 5C 66 AF F4 F0 70 9D 3C 10 00 1D 00 
+                    00 00 00 00 00 00 00 00 00 00 63 32 F9 80 7F EA 
+                    7F A6 BE 33 16 B7 6E 9E 5C 2A F2 2E 78 13 81 26 
+                    72 54 06 84 37 99 E0 CB E5 F8 01 60 D0 27 16 18 
+                    06 AA 71 60 3F E9 6D 98 26 EE 41 E7 FA 9A E8 49 
+                    DF 08 00 30 00 00 00 00 00 00 00 00 00 00 00 40 
+                    99 7D 40 40 35 C8 05 A2 F6 51 64 DA 91 18 31 02 
+                    F7 80 03 5A 05 6F 26 73 42 1A 53 78 65 F4 FC 02 
+                    37 07 6E 4E BB FD DD 37 DA 6D 64 CC C8 C4 09 DB 
+                    03 FD 46 13 0A E0
+                </rrlpPayload>
+            </posPayLoad>
+        </msSUPLPOS>
+    </message>
+</ULP-PDU>

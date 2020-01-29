@@ -222,7 +222,7 @@ int EXPORT supl_decode_rrlp(supl_ulp_t *ulp_pdu, PDU_t **ret_rrlp) {
 }
   
 int EXPORT supl_server_connect(supl_ctx_t *ctx, char *server) {
-  int err;
+  int err = 0;
   const SSL_METHOD *meth;
 
   SSLeay_add_ssl_algorithms();
@@ -239,11 +239,12 @@ int EXPORT supl_server_connect(supl_ctx_t *ctx, char *server) {
     ctx->fd = server_connect(server);
     if (ctx->fd == -1) return E_SUPL_CONNECT;
   }
-
+ 
   SSL_set_fd(ctx->ssl, ctx->fd);
+  ////////////////////////////////////////////////////////////
   err = SSL_connect(ctx->ssl);
+  printf("%d\n", err);
   if (err == -1) return E_SUPL_CONNECT;
-
 #if 0
   {
     X509 *s_cert = SSL_get_peer_certificate(ctx->ssl);

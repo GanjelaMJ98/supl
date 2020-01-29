@@ -16,6 +16,8 @@
 #include <errno.h>
 #include <sys/types.h>
 
+#include <stdint.h>
+
 #include "supl.h"
 
 typedef enum { FORMAT_DEFAULT, FORMAT_HUMAN } format_t;
@@ -40,6 +42,342 @@ static time_t utc_time(int week, long tow) {
 
   return t;
 } 
+char* d2(int x){
+  char buff[10];
+  char strip[45];
+  sprintf(buff,"%x",x);
+  
+  sprintf(strip,"%.*s", 4, buff + 4);
+  return strip;
+}
+
+
+
+
+
+void message_alm(supl_assist_t *ctx){
+  FILE * logFile;
+  time_t t = time(NULL);
+  struct tm* aTm = localtime(&t);
+  char fileName[40];
+  sprintf(fileName,"messages/log_%02d-%02d__%02d_%02d_%02d.txt", aTm->tm_mon+1, aTm->tm_mday, aTm->tm_hour, aTm->tm_min, aTm->tm_sec);
+  //printf("%s\n", fileName);
+  
+  if((logFile=fopen(fileName,"w")) == NULL) {
+      printf("Cannot open directory file.");
+      exit(1);
+  }
+
+
+
+  printf("MESSAGE ALM:\n");
+  for (int i = 0; i < ctx->cnt_alm; i++) {
+    struct supl_almanac_s *a = &ctx->alm[i];
+    struct supl_ephemeris_s *e = &ctx->eph[i];
+    char buff[150];
+    char hexstring[150];
+
+    //D2
+    char buff_omega[10];
+    sprintf(buff_omega,"%X",a->OMEGA_dot);
+    sprintf(buff_omega,"%.*s", 4, buff_omega + 4);
+    //D1
+    char buff_idot[10];
+    sprintf(buff_idot,"%X",e->i_dot);
+    if(strlen(buff_idot) > 4){
+      sprintf(buff_idot,"%s", buff_idot + 4);
+    }else{
+      sprintf(buff_idot,"%04X",e->i_dot);
+    }
+    //D5
+    char buff_w[10];
+    sprintf(buff_w,"%X",a->w);
+    if(strlen(buff_w) > 6){
+      sprintf(buff_w,"%s", buff_w + 2);
+    }else{
+      sprintf(buff_w,"%06X", a->w);
+    }
+    //D6
+    char buff_M0[10];
+    sprintf(buff_M0,"%X",a->M0);
+    if(strlen(buff_M0) > 6){
+      sprintf(buff_M0,"%s", buff_M0 + 2);
+    }else{
+      sprintf(buff_M0,"%06X", a->M0);
+    }
+    //D4
+    char buff_O0[10];
+    sprintf(buff_O0,"%X",a->OMEGA_0);
+    if(strlen(buff_O0) > 6){
+      sprintf(buff_O0,"%s", buff_O0 + 2);
+    }else{
+      sprintf(buff_O0,"%06X", a->OMEGA_0);
+    }
+
+
+    char buff_AF1[10];
+    sprintf(buff_AF1,"%X",a->AF1);
+    if(strlen(buff_AF1) > 6){
+      sprintf(buff_AF1,"%s", buff_AF1 + 2);
+    }else{
+      sprintf(buff_AF1,"%06X", a->AF1);
+    }
+    //printf("%s\n", buff_AF1);
+    char buff_AF0[10];
+    sprintf(buff_AF0,"%X",a->AF0);
+    if(strlen(buff_AF0) > 6){
+      sprintf(buff_AF0,"%s", buff_AF0 + 2);
+    }else{
+      sprintf(buff_AF0,"%06X", a->AF0);
+    }
+   // printf("%s\n", buff_AF0);
+    sprintf(buff, "$PMTK711,%02x,%02X,%X%04X,%X%s,%s00,%X,%06s,%s,%s,%c%c%c%c%c%c",
+    //sprintf(buff, "$PMTK711,%02x,%04X,%X%04X,%X%s,%s00,%X,%06s,%s,%s,%c%c%c%c%c%c          %x/%x",
+                        a->prn,                     //SV      ok
+                        ctx->time.gps_week,         //WEEK    ok
+                        64 + a->prn, a->e,          //DO      ok
+                        a->toa,buff_idot,           //D1      ------
+                        buff_omega,                 //D2      ok
+                        a->A_sqrt,                  //D3      ok
+                        buff_O0,                    //D4      ok
+                        buff_w,                     //D5      ok
+                        buff_M0,                    //D6      ok
+
+
+                        buff_AF0[3],buff_AF0[4],buff_AF1[3],buff_AF1[4],buff_AF1[5],buff_AF0[5]);
+
+                        //a->AF0, a->AF1);            //D7      +-*/
+    //printf("%s\n", buff);
+  /*  sprintf(hexstring, "B5620B3028%02X%04X%X%04X%X%s%s00%X%06s%s%s%c%c%c%c%c%c0000",
+                        a->prn,
+                        1024 + ctx->time.gps_week,
+                        64 + a->prn, a->e,
+                                  //DO      ok
+                        a->toa,buff_idot,           //D1      ------
+                        buff_omega,                 //D2      ok
+                        a->A_sqrt,                  //D3      ok
+                        buff_O0,                    //D4      ok
+                        buff_w,                     //D5      ok
+                        buff_M0,                    //D6      ok
+                        buff_AF0[3],buff_AF0[4],buff_AF1[3],buff_AF1[4],buff_AF1[5],buff_AF0[5]);            //D7      +-*/
+    //printf("%s\n", hexstring);
+    //printf("%d\n", strlen(hexstring));
+    printf("%s\n", buff);
+    
+    int i;
+    unsigned char bytearray[34];
+    uint8_t str_len = strlen(hexstring);
+
+
+    for (i = 0; i < (str_len / 2); i++) {
+        sscanf(hexstring + 2*i, "%02x", &bytearray[i]);
+        //printf("0x%02X,", bytearray[i]);
+    }
+    int8_t CK_A = 0, CK_B = 0;
+    for( uint8_t i = 2; i < (sizeof(bytearray) - 2) ; i++ )
+    {
+      CK_A = CK_A + bytearray[i];
+      CK_B = CK_B + CK_A;
+    }
+
+  CK_A &= 0xFF;
+  CK_B &= 0xFF;
+
+  bytearray[32] = CK_A;
+  bytearray[33] = CK_B;
+
+  for(int i = 0; i<sizeof(bytearray);i++){
+    fprintf(logFile,"0x%02x,", bytearray[i]);
+  }
+  fprintf(logFile,"\n");
+  }
+}
+
+/*
+    sprintf(buff, "$PMTK710,%02X,000000,000000,000000,000000,000000,%02X%X,00%s,000000,%02X%s,%X,%X, %X ,%X,%X,%X,%X00,%X,%X,%X,%X,%X,%X,%X",
+                        e->prn, 
+                        //
+                        //
+                        //
+                        //
+                        //
+                        e->IODC, 
+                        e->toc,
+                        
+                        buff_AF1,
+                        //e->AF1,
+                        e->IODC, 
+                        buff_Crs,
+                        //e->Crs,
+                        
+                        e->delta_n, 
+                        e->M0,
+                        e->Cuc,
+                        e->e,
+                        e->Cus,
+                        e->A_sqrt,
+
+                        e->toe,
+                        e->Cic,
+                        e->OMEGA_0,
+                        e->Cis,
+                        e->i0,
+                        e->Crc,
+                        e->w,
+                        e->OMEGA_dot
+                        );
+    printf("%s\n", buff);
+    }
+*/
+
+void message_eph(supl_assist_t *ctx){
+   printf("MESSAGE EPH:\n");
+    
+    
+    for(int i = 0; i < ctx->cnt_eph; i++) {
+    //for(int i = 0; i < 2; i++) {
+    char buff[200] = "";
+    
+    struct supl_almanac_s *a = &ctx->alm[i];
+    struct supl_ephemeris_s *e = &ctx->eph[i];
+    
+
+    char buff_IODC[20];
+    sprintf(buff_IODC,"%X",e->IODC);
+    if(strlen(buff_IODC) > 2){
+      sprintf(buff_IODC,"%s", buff_IODC + 1);
+    }else{
+      sprintf(buff_IODC,"%02X", e->IODC);
+    }
+
+    char buff_Crs[20];
+    sprintf(buff_Crs,"%X",e->Crs);
+    if(strlen(buff_Crs) > 6){
+      sprintf(buff_Crs,"%s", buff_Crs + 4);
+    }else{
+      sprintf(buff_Crs,"%04X", e->Crs);
+    }
+
+    char buff_AF1[20];
+    sprintf(buff_AF1,"%X",e->AF1);
+    if(strlen( buff_AF1) > 6){
+      sprintf( buff_AF1,"%s",  buff_AF1 + 4);
+    }else{
+      sprintf( buff_AF1,"%04X", e->AF1);
+    }
+
+    char buff_AF0[20];
+    sprintf(buff_AF0,"%X",e->AF0);
+    if(strlen( buff_AF0) > 6){
+      sprintf( buff_AF0,"%s",  buff_AF0 + 4);
+    }else{
+      sprintf( buff_AF0,"%04X", e->AF0);
+    }
+
+    char buff_Cuc[20];
+    sprintf(buff_Cuc,"%X",e->Cuc);
+    if(strlen( buff_Cuc) > 6){
+      sprintf( buff_Cuc,"%s",  buff_Cuc + 4);
+    }else{
+      sprintf( buff_Cuc,"%04X", e->Cuc);
+    }
+
+    char buff_Cic[20];
+    sprintf(buff_Cic,"%X",e->Cic);
+    if(strlen( buff_Cic) > 4){
+      sprintf( buff_Cic,"%s",  buff_Cic + 4);
+    }else{
+      sprintf( buff_Cic,"%04X", e->Cic);
+    }
+
+    char buff_Cis[20];
+    sprintf(buff_Cis,"%X",e->Cis);
+    if(strlen( buff_Cis) > 4){
+      sprintf( buff_Cis,"%s",  buff_Cis + 4);
+    }else{
+      sprintf( buff_Cis,"%04X", e->Cis);
+    }
+    char buff_OD[20];
+    sprintf(buff_OD,"%X",e->OMEGA_dot);
+    if(strlen( buff_OD) > 4)
+      sprintf( buff_OD,"%s",  buff_OD + 2);
+
+    char buff_tgd[20];
+    sprintf(buff_tgd,"%X",e->tgd);
+    if(strlen( buff_tgd) > 2)
+      sprintf( buff_tgd,"0000%s",  buff_tgd + 6);
+    else
+      sprintf(buff_tgd,"%06X",e->tgd);
+   
+   printf("%X\n", e->OMEGA_0);
+   printf("%d\n", e->OMEGA_0);
+   
+    /*printf("%X\n", e->fill1);
+    printf("%X\n", e->e);
+    printf("%X\n", e->i_dot);
+    printf("%X\n", e->AF2);
+    printf("%X\n", e->bits);
+    printf("%X\n", e->ura);
+    printf("%X\n", e->tgd);
+    printf("%X\n", e->AODA);*/                            //AF0
+    //sprintf(buff, "000000,000000,000000,000000,00000,%03X%X,00%s,00000,%03X%s,%X,%08X,%s0,%X,%04X,%X,%X00,%s,%08X,%s,%X,%X,%X,%s",
+    sprintf(buff, "000000000000000000000000%06s%s%X00%s00000%03X%s%X%08X%s0%07X%04X%X%X00%s%08X%s%X%X%08X%s%s\0",
+                        
+                        //
+                        //
+                        //e->i_dot,
+                        //
+                        buff_tgd,
+                        buff_IODC, 
+                        e->toc,
+                        
+                        buff_AF1,
+                        //e->AF1,
+                        e->IODC, 
+                        buff_Crs,
+                        //e->Crs,
+                        
+                        e->delta_n,
+                        //buff_dn,
+                        e->M0,
+                        buff_Cuc,
+                        //e->Cuc,
+                        e->e,
+                        e->Cus,
+                        e->A_sqrt,
+
+                        e->toe,
+                        //e->Cic,
+                        buff_Cic,
+                        e->OMEGA_0,
+                        //e->Cis,
+                        buff_Cis,
+                        e->i0,
+                        e->Crc,
+                        e->w,
+                        //e->OMEGA_dot
+                        buff_OD,
+                        buff_IODC
+                        );
+
+    
+    int position = 7;
+    int c = 0;
+    while(position < strlen(buff)){
+      for (c = strlen(buff) - 1; c >= position - 1; c--){
+        buff[c+1] = buff[c];
+      }  
+      buff[position-1] = ',';
+      position = position+7; 
+    }
+    char message[50]="";
+    sprintf(message, "$PMTK710,%02x,", e->prn);
+    printf("%s", message);
+    printf("%s\n", buff);
+  }
+ } 
+
+
 
 static int supl_consume_1(supl_assist_t *ctx) {
   if (ctx->set & SUPL_RRLP_ASSIST_REFLOC) {
@@ -97,37 +435,38 @@ static int supl_consume_1(supl_assist_t *ctx) {
     for (i = 0; i < ctx->cnt_eph; i++) {
       struct supl_ephemeris_s *e = &ctx->eph[i];
 
-      fprintf(stdout, "  %d %g %g %g %g %g %g %g %g",
+      fprintf(stdout, "  prn %d\n delta_n %g\n M0 %g\n A_sqrt %g\n OMEGA_0 %g\n i0 %g\n w %g\n OMEGA_dot %g\n i_dot %g\n",
 	      e->prn, 
-	      e->delta_n * pow(2.0, -43), 
-	      e->M0 * pow(2.0, -31), 
-	      e->A_sqrt * pow(2.0, -19), 
-	      e->OMEGA_0 * pow(2.0, -31), 
-	      e->i0 * pow(2.0, -31), 
-	      e->w * pow(2.0, -31), 
-	      e->OMEGA_dot * pow(2.0, -43), 
-	      e->i_dot * pow(2.0, -43));
-      fprintf(stdout, " %g %g %g %g %g %g",
+	      e->delta_n , 
+	      e->M0 , 
+	      e->A_sqrt, 
+	      e->OMEGA_0 , 
+	      e->i0  , 
+	      e->w , 
+	      e->OMEGA_dot , 
+	      e->i_dot );
+      fprintf(stdout, " Cuc %g Cus %g Crc %g Crs %g Cic %g Cis %g\n",
 	      e->Cuc * pow(2.0, -29), 
 	      e->Cus * pow(2.0, -29), 
 	      e->Crc * pow(2.0, -5), 
 	      e->Crs * pow(2.0, -5), 
 	      e->Cic * pow(2.0, -29), 
 	      e->Cis * pow(2.0, -29));
-      fprintf(stdout, " %g %u %g %g %g %g",
+      fprintf(stdout, " toe %g\n IODC %u\n toc %g\n AF0 %g\n AF1 %g\n AF2 %g\n",
 	      e->toe * pow(2.0, 4), 
 	      e->IODC, 
-	      e->toc * pow(2.0, 4), 
-	      e->AF0 * pow(2.0, -31), 
-	      e->AF1 * pow(2.0, -43), 
-	      e->AF2 * pow(2.0, -55));
-      fprintf(stdout, " %d %d %d %d %d\n",
+	      e->toc , 
+	      e->AF0 , 
+	      e->AF1 , 
+	      e->AF2 );
+      fprintf(stdout, "bits %d\n ura %d\n health %d\n tgd %d\n AODA%d\n\n\n\n",
 	      e->bits,
 	      e->ura,
 	      e->health,
 	      e->tgd,
 	      e->AODA * 900);
     }
+  message_eph(ctx);  
   }
 
   if (ctx->cnt_alm) {
@@ -154,6 +493,8 @@ static int supl_consume_1(supl_assist_t *ctx) {
 	      a->AF0 * pow(2.0, -20),
 	      a->AF1 * pow(2.0, -38));
     }
+  message_alm(ctx);
+  
   }
 
   return 1;
@@ -305,6 +646,7 @@ int main(int argc, char *argv[]) {
 
   supl_ctx_new(&ctx);
   server = "supl.google.com";
+  //server = "localhost";
 
   while (1) {
     int opt_index;
